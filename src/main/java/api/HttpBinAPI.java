@@ -20,13 +20,24 @@ public class HttpBinAPI {
         return given().spec(specification);
     }
 
-    public byte[] getImage(ImageExtensions imageExtension){
-        String endPoint = switch (imageExtension) {
-            case PNG -> HttpBinEndPoints.getPNG;
-            case JPEG -> HttpBinEndPoints.getJPEG;
-            case SVG -> HttpBinEndPoints.getSVG;
-            case WEBP -> HttpBinEndPoints.getWEBP;
-        };
+    public byte[] getImage(ImageExtensions imageExtension) {
+        String endPoint;
+        switch (imageExtension) {
+            case PNG:
+                endPoint = HttpBinEndPoints.getPNG;
+                break;
+            case JPEG:
+                endPoint = HttpBinEndPoints.getJPEG;
+                break;
+            case SVG:
+                endPoint = HttpBinEndPoints.getSVG;
+                break;
+            case WEBP:
+                endPoint = HttpBinEndPoints.getWEBP;
+                break;
+            default:
+                throw new IllegalArgumentException("Can't recognize \"" + imageExtension + "\" image extension!");
+        }
         return request()
                 .expect()
                 .statusCode(200)
