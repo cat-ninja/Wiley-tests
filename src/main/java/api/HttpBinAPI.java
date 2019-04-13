@@ -1,11 +1,10 @@
 package api;
 
 import api.endpoints.HttpBinEndPoints;
-import api.objects.Images;
+import api.objects.ImageExtensions;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
 
-import static api.objects.Images.*;
 import static io.restassured.RestAssured.given;
 
 public class HttpBinAPI {
@@ -21,21 +20,7 @@ public class HttpBinAPI {
         return given().spec(specification);
     }
 
-    public byte[] getPNGImage() {
-        return getImage(PNG);
-    }
-
-    public byte[] getJPEGImage() {
-        return getImage(JPEG);
-    }
-    public byte[] getSVGImage() {
-        return getImage(SVG);
-    }
-    public byte[] getWEBPImage() {
-        return getImage(WEBP);
-    }
-
-    private byte[] getImage(Images imageExtension){
+    public byte[] getImage(ImageExtensions imageExtension){
         String endPoint = switch (imageExtension) {
             case PNG -> HttpBinEndPoints.getPNG;
             case JPEG -> HttpBinEndPoints.getJPEG;
@@ -43,6 +28,8 @@ public class HttpBinAPI {
             case WEBP -> HttpBinEndPoints.getWEBP;
         };
         return request()
+                .expect()
+                .statusCode(200)
                 .when()
                 .get(endPoint)
                 .then()
