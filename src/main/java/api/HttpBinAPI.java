@@ -1,6 +1,7 @@
 package api;
 
 import api.endpoints.HttpBinEndPoints;
+import api.objects.DelayedResponse;
 import api.objects.ImageExtensions;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
@@ -47,4 +48,16 @@ public class HttpBinAPI {
                 .extract()
                 .asByteArray();
     }
+
+    public DelayedResponse getResponseWithDelay(Integer delayTime){
+        return request()
+                .expect()
+                .statusCode(200)
+                .when()
+                .get("/delay/" + delayTime)
+                .then()
+                .extract()
+                .as(DelayedResponse.class);
+    }
+
 }

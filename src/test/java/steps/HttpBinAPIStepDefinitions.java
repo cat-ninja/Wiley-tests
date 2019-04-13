@@ -5,8 +5,8 @@ import api.objects.ImageExtensions;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.apache.logging.log4j.LogManager;
-import org.junit.Assert;
 import org.apache.logging.log4j.Logger;
+import org.junit.Assert;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,8 +36,21 @@ public class HttpBinAPIStepDefinitions {
     @Then("^(.+) image should be equal to ideal one$")
     public void compareImages(String imageExtension) throws IOException {
         String image = ImageExtensions.valueOf(imageExtension).name();
+        logger.info("Comparing received " + image + " image with local one...");
         byte[] idealImage = Files.readAllBytes(new File("src/test/resources/images/" + image + "Image." + image).toPath());
         Assert.assertArrayEquals("\"" + imageExtension + "\" image is not equal to ideal one!", idealImage, lastReceivedImage);
+        logger.info("Images are equal!");
     }
 
+    /**
+     * Send request and waits for response to be received.
+     * @param responseDelay timeout in seconds.
+     */
+    @When("request is sent with {int} seconds response delay parameter")
+    public void sendRequestWithResponseDelay(int responseDelay) {
+        if (responseDelay > 10) throw new IllegalArgumentException("Parameter can't be more than 10 seconds!");
+        logger.info("Getting response with " + responseDelay + " second(s) delay...");
+        Assert.assertNotNull("Can't get response from API!", api.getResponseWithDelay(responseDelay));
+        logger.info("Response was successfully received!");
+    }
 }
